@@ -1,0 +1,4 @@
+name: TeamTimeCraft
+version: '1.0-SNAPSHOT'
+main: me.jose.teamTimeCraft.TeamTimeCraft
+api-version: '1.21'
