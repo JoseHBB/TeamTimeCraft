@@ -7,12 +7,10 @@ public final class TeamTimeCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        System.out.println("TeamTimeCraft plugin enabled!");
+
+        getServer().getPluginManager().registerEvents(new JoinLeaveListener(), this);
+
+        getLogger().info("Plugin carregado com sucesso!");
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-        System.out.println("TeamTimeCraft plugin disabled!");
-    }
 }
