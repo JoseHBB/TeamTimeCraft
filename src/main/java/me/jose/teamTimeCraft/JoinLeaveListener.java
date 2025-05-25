@@ -1,19 +1,57 @@
 package me.jose.teamTimeCraft;
 
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 public class JoinLeaveListener implements Listener {
+    @EventHandler
+    public void onLogin(PlayerLoginEvent event) {
+
+        Player player = event.getPlayer();
+
+        int maxSeconds = ConfigManager.getMaxPlaytimeSeconds();
+        int played = PlayTimeStorage.getInstance().getDailyTime(player.getUniqueId());
+        int remaining = Math.max(0, maxSeconds - played);
+
+        if (remaining == 0) {
+
+            if (Bukkit.getOnlinePlayers().size() + 1 >= ConfigManager.getMaxPlayerCount())
+            {
+                int restoreTime = 5 * 60;
+                PlayTimeStorage.getInstance().restoreTime(player.getUniqueId(), restoreTime);
+
+                Bukkit.getScheduler().runTaskLater(
+                        TeamTimeCraft.getInstance(),
+                        () -> player.sendMessage(Component.text("Você recebeu " + restoreTime / 60 + " minutos, a jogadores o suficiente!").color(NamedTextColor.AQUA)),
+                        60L
+                );
+
+                return;
+            }
+
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER,
+                    Component.text("Não não, você não pode entrar mais hoje.\nE a quantidade de jogadores online é menor que o necessário para sua entrada."));
+        }
+    }
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
+
+        LocalDate today = PlayTimeStorage.getTodayInBrazil();
+        PlayTimeStorage.getInstance().checkDailyReset(player.getUniqueId(), today);
 
         if (player.getName().equalsIgnoreCase("josehb")){
 
@@ -54,5 +92,11 @@ public class JoinLeaveListener implements Listener {
         }
 
         event.quitMessage(Component.text(event.getPlayer().getName() + " saiu do servidor comunitário barrinhense ☹",  NamedTextColor.RED));
+
+        UUID uuid = event.getPlayer().getUniqueId();
+        BossBar bar = BossBarTimer.bossBars.remove(uuid);
+        if (bar != null) {
+            event.getPlayer().hideBossBar(bar);
+        }
     }
 }

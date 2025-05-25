@@ -1,8 +1,7 @@
-﻿daily_limit:
-  weekdays: 120
-  weekends: 180
-
-max_player_count: 5
-
-alert_on_join:
-  - TeteuFRA
+﻿playtime:
+  daily_limit:
+    weekdays:
+      minutes: 1
+    weekends:
+      minutes: 1
+  max_player_count: 2

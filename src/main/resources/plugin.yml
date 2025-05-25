@@ -5,9 +5,9 @@ api-version: '1.21'
 
 commands:
   playtime:
-    description: View the playtime of a player
-    usage: /playtime [player]
-
-permissions:
-  teamtimecraft.view.others:
-    default: op
+    description: Vê o tempo jogado de um jogador
+    usage: /playtime
+  allplaytime:
+    description: Vê o tempo de todos os jogadores
+    usage: /allplaytime
+    permission: op
