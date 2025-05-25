@@ -13,16 +13,16 @@ import java.util.UUID;
 
 public class BossBarTimer {
     public static final Map<UUID, BossBar> bossBars = new HashMap<>();
-
-    public static void Start(Plugin plugin) {
+    public static void start(Plugin plugin) {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             int maxSeconds = ConfigManager.getMaxPlaytimeSeconds();
             int onlineLimit = ConfigManager.getMaxPlayerCount();
             boolean shouldCount = Bukkit.getOnlinePlayers().size() < onlineLimit;
+            boolean toggle = TeamTimeCraft.getToggle();
 
-            String countText = shouldCount ? "CONTANDO" : "PARADO";
+            String countText = (shouldCount && toggle) ? "CONTANDO" : "PARADO";
             Component countComponent = Component.text(countText)
-                    .color(shouldCount ? NamedTextColor.RED : NamedTextColor.GREEN);
+                    .color((shouldCount && toggle) ? NamedTextColor.RED : NamedTextColor.GREEN);
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 UUID uuid = p.getUniqueId();
@@ -63,7 +63,7 @@ public class BossBarTimer {
                     p.showBossBar(bar);
 
                 }
-                if (shouldCount) {
+                if (shouldCount && toggle) {
                     PlayTimeStorage.getInstance().addTime(p.getUniqueId(), 1);
 
                     if (remaining == 0) {
@@ -82,7 +82,6 @@ public class BossBarTimer {
             });
         }, 0, 20L);
     }
-
     private static String formatTime(int seconds) {
         int h = seconds / 3600;
         int m = (seconds % 3600) / 60;

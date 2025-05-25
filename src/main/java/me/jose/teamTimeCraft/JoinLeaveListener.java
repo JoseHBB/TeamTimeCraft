@@ -53,7 +53,9 @@ public class JoinLeaveListener implements Listener {
         LocalDate today = PlayTimeStorage.getTodayInBrazil();
         PlayTimeStorage.getInstance().checkDailyReset(player.getUniqueId(), today);
 
-        if (player.getName().equalsIgnoreCase("josehb")){
+        PlayTimeStorage.getInstance().setPlayerName(player.getUniqueId(), player.getName());
+
+        if (player.getName().equalsIgnoreCase("teteufra")){
 
             event.joinMessage(Component.text()
                     .content("")
@@ -69,6 +71,9 @@ public class JoinLeaveListener implements Listener {
 
         event.joinMessage(Component.text(event.getPlayer().getName() + " entrou no servidor comunitário barrinhense ✔",  NamedTextColor.GREEN));
 
+        Missions missions = TeamTimeCraft.getInstance().getMissions();
+        missions.showMissions();
+
         //this works but is deprecated
         //event.setJoinMessage(ChatColor.GREEN + "Welcome to the server, " + player.getName() + "!");
     }
@@ -78,7 +83,7 @@ public class JoinLeaveListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (player.getName().equalsIgnoreCase("josehb")){
+        if (player.getName().equalsIgnoreCase("teteufra")){
 
             event.quitMessage(Component.text()
                     .content("")

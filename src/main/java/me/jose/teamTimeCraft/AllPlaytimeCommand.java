@@ -1,6 +1,5 @@
 package me.jose.teamTimeCraft;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,8 +16,9 @@ public class AllPlaytimeCommand implements CommandExecutor {
         for (Map.Entry<UUID, Integer> entry : storage.getTotalTimeMap().entrySet()) {
             UUID uuid = entry.getKey();
             int seconds = entry.getValue();
-            String name = Bukkit.getOfflinePlayer(uuid).getName();
-            sender.sendMessage(name + ": " + formatTime(seconds));
+            String name = storage.getPlayerName(uuid);
+            if (name == null) name = uuid.toString().substring(0, 8); // Fallback simples
+            sender.sendMessage("§f" + name + ": §b" + formatTime(seconds));
         }
 
         return true;

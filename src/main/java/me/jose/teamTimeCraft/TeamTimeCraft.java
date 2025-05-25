@@ -6,7 +6,8 @@ import java.util.Objects;
 
 public final class TeamTimeCraft extends JavaPlugin {
     private static TeamTimeCraft instance;
-
+    private Missions missions;
+    public static boolean toggle = true;
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -15,11 +16,26 @@ public final class TeamTimeCraft extends JavaPlugin {
         saveDefaultConfig();
 
         PlayTimeStorage.load();
-        BossBarTimer.Start(this);
+        BossBarTimer.start(this);
 
         getServer().getPluginManager().registerEvents(new JoinLeaveListener(), this);
-        Objects.requireNonNull(getCommand("Playtime")).setExecutor(new PlaytimeCommand());
-        Objects.requireNonNull(getCommand("AllPlaytime")).setExecutor(new AllPlaytimeCommand());
+        Objects.requireNonNull(getCommand("playtime")).setExecutor(new PlaytimeCommand());
+        Objects.requireNonNull(getCommand("allplaytime")).setExecutor(new AllPlaytimeCommand());
+        Objects.requireNonNull(getCommand("toggleplaytime")).setExecutor(new TogglePlaytimeCommand());
+        Objects.requireNonNull(getCommand("restoreplaytime")).setExecutor(new RestorePlaytimeCommand());
+        Objects.requireNonNull(getCommand("missionsupdate")).setExecutor(new MissionUpdateCommand());
+
+        // Instanciando as missões
+        missions = new Missions();
+        // Já busca as missões ao iniciar
+        missions.getMissionsAsync(this);
+
+        getServer().getScheduler().runTaskTimer(
+                this,
+                () -> missions.getMissionsAsync(this),
+                600L, // Delay inicial (5 minutos)
+                6000L  // Intervalo entre execuções (5 minutos)
+        );
 
         getServer().getScheduler().runTaskTimer(
                 this,
@@ -27,6 +43,8 @@ public final class TeamTimeCraft extends JavaPlugin {
                 1200L, // Delay inicial (1 minuto)
                 1200L  // Intervalo entre execuções (1 minuto)
         );
+
+        new DailyResetTask(this).start();
 
         getLogger().info("Plugin carregado com sucesso!");
     }
@@ -39,5 +57,11 @@ public final class TeamTimeCraft extends JavaPlugin {
 
     public static TeamTimeCraft getInstance() {
         return instance;
+    }
+    public Missions getMissions() {
+        return missions;
+    }
+    public static boolean getToggle() {
+        return toggle;
     }
 }

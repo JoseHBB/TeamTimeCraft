@@ -11,3 +11,15 @@ commands:
     description: Vê o tempo de todos os jogadores
     usage: /allplaytime
     permission: op
+  toggleplaytime:
+    description:  Liga/Desliga o timer
+    usage: /toggleplaytime
+    permission: op
+  missionsupdate:
+    description: Atualiza as missões
+    usage: /missionsupdate
+    permission: op
+  restoreplaytime:
+    description: Restaura o tempo diário de um jogador
+    usage: /restoreplaytime <jogador> <segundos>
+    permission: op

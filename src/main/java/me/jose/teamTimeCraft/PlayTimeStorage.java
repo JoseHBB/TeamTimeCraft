@@ -1,5 +1,7 @@
 package me.jose.teamTimeCraft;
 
+import org.bukkit.Bukkit;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -16,9 +18,10 @@ public class PlayTimeStorage implements Serializable  {
     private final Map<UUID, Integer> dailyTime = new HashMap<>();
     private final Map<UUID, Integer> totalTime = new HashMap<>();
     private final Map<UUID, LocalDate> lastSeenDate = new HashMap<>();
+    private final Map<UUID, String> playerNames = new HashMap<>();
 
     public static void load() {
-        File file = new File("plugins/TeamTimeCraft/data.ser");
+        File file = new File(TeamTimeCraft.getInstance().getDataFolder(), "data.ser");
         file.getParentFile().mkdirs();
 
         if (file.exists()) {
@@ -37,13 +40,25 @@ public class PlayTimeStorage implements Serializable  {
             instance = new PlayTimeStorage();
         }
     }
+    public void saveAsync() {
+        Bukkit.getScheduler().runTaskAsynchronously(TeamTimeCraft.getInstance(), this::save);
+    }
     public void save() {
-        File file = new File("plugins/TeamTimeCraft/data.ser");
+
+        File file = new File(TeamTimeCraft.getInstance().getDataFolder(), "data.ser");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(this);
             TeamTimeCraft.getInstance().getLogger().info("PlaytimeStorage saved");
+
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public void resetAllPlayTimes() {
+        LocalDate today = getTodayInBrazil();
+        for (UUID uuid : dailyTime.keySet()) {
+            dailyTime.put(uuid, 0);
+            lastSeenDate.put(uuid, today);
         }
     }
     public static PlayTimeStorage getInstance() {
@@ -76,13 +91,21 @@ public class PlayTimeStorage implements Serializable  {
             lastSeenDate.put(uuid, today);
         }
     }
+    public void setPlayerName(UUID uuid, String name) {
+        playerNames.put(uuid, name);
+    }
+    public String getPlayerName(UUID uuid) {
+        return playerNames.get(uuid);
+    }
+    public Map<UUID, String> getPlayerNamesMap() {
+        return playerNames;
+    }
     public Map<UUID, Integer> getDailyTimeMap() {
         return dailyTime;
     }
     public Map<UUID, Integer> getTotalTimeMap() {
         return this.totalTime;
     }
-
     public static LocalDate getTodayInBrazil() {
         return ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDate();
     }
