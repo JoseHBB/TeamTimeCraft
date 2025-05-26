@@ -22,10 +22,10 @@ public class DailyResetTask {
                 PlayTimeStorage.getInstance().resetAllPlayTimes();
                 PlayTimeStorage.getInstance().saveAsync();
 
+                plugin.getLogger().info("Reset diário executado. Próxima execução agendada.");
                 // Reagendar para o próximo dia
-                start();
             }
-        }.runTaskLater(plugin, ticksUntilMidnight);
+        }.runTaskTimer(plugin, ticksUntilMidnight , 24 * 60 * 60 * 20);
     }
 
     private long getTicksUntilMidnight() {

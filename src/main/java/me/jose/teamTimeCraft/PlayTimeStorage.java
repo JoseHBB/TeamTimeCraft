@@ -59,7 +59,7 @@ public class PlayTimeStorage implements Serializable  {
     public void resetAllPlayTimes() {
         LocalDate today = getTodayInBrazil();
         for (UUID uuid : dailyTime.keySet()) {
-            dailyTime.put(uuid, 0);
+            setRemainingTime(uuid, ConfigManager.getMaxPlaytimeSeconds());
             lastSeenDate.put(uuid, today);
         }
     }
