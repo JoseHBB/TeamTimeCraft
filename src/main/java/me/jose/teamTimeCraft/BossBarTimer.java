@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +27,7 @@ public class BossBarTimer {
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 UUID uuid = p.getUniqueId();
-                int played = PlayTimeStorage.getInstance().getDailyTime(uuid);
-                int remaining = Math.max(0, maxSeconds - played);
+                int remaining = PlayTimeStorage.getInstance().getRemainingTime(uuid);
                 float progress = Math.min(1.0f, (float) remaining / maxSeconds);
 
                 BossBar.Color color = BossBar.Color.GREEN;
@@ -36,6 +36,8 @@ public class BossBarTimer {
                 } else if (progress <= 0.5) {
                     color = BossBar.Color.YELLOW;
                 }
+
+                if (remaining <= 10) {showCenterCountdown(p, remaining, null);}
 
                 BossBar bar = bossBars.get(uuid);
 
@@ -70,6 +72,9 @@ public class BossBarTimer {
                         p.kick(Component.text("Parece que você jogou um pouco de mais hoje!!!"));
                     }
                 }
+                else {
+                    PlayTimeStorage.getInstance().addTimeWithoutRemoving(p.getUniqueId(), 1);
+                }
             }
 
             bossBars.entrySet().removeIf(entry -> {
@@ -82,6 +87,30 @@ public class BossBarTimer {
             });
         }, 0, 20L);
     }
+    /**
+     * Mostra uma contagem regressiva central na tela do jogador, tipo Build Battle.
+     * @param player Jogador que vai receber o timer.
+     * @param seconds Quantidade de segundos da contagem.
+     * @param onFinish Runnable opcional para rodar ao terminar a contagem.
+     */
+    public static void showCenterCountdown(Player player, int seconds, Runnable onFinish) {
+        new BukkitRunnable() {
+            int timer = seconds;
+            @Override
+            public void run() {
+                if (timer > 0) {
+                    // Exibe o tempo restante no centro da tela
+                    player.sendTitle("", "§c" + timer, 0, 20, 0);
+                    timer--;
+                } else {
+                    player.resetTitle();
+                    if (onFinish != null) onFinish.run();
+                    cancel();
+                }
+            }
+        }.runTaskTimer(TeamTimeCraft.getInstance(), 0, 20L);
+    }
+
     private static String formatTime(int seconds) {
         int h = seconds / 3600;
         int m = (seconds % 3600) / 60;

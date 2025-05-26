@@ -12,9 +12,11 @@ public class PlaytimeCommand implements CommandExecutor {
         {
             int daily = PlayTimeStorage.getInstance().getDailyTime(player.getUniqueId());
             int total = PlayTimeStorage.getInstance().getTotalTime(player.getUniqueId());
+            int remaining = PlayTimeStorage.getInstance().getRemainingTime(player.getUniqueId());
 
             player.sendMessage("§aTempo jogado hoje: §f" + formatTime(daily));
             player.sendMessage("§aTempo jogado no total: §f" + formatTime(total));
+            player.sendMessage("§aTempo restante hoje: §e" + formatTime(remaining));
 
             return true;
         }

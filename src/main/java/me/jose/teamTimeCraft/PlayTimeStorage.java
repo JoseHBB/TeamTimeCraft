@@ -16,6 +16,8 @@ public class PlayTimeStorage implements Serializable  {
 
     private static PlayTimeStorage instance;
     private final Map<UUID, Integer> dailyTime = new HashMap<>();
+    private final Map<UUID, Integer> remainingTime = new HashMap<>();
+
     private final Map<UUID, Integer> totalTime = new HashMap<>();
     private final Map<UUID, LocalDate> lastSeenDate = new HashMap<>();
     private final Map<UUID, String> playerNames = new HashMap<>();
@@ -70,6 +72,12 @@ public class PlayTimeStorage implements Serializable  {
     public int getTotalTime(UUID uuid) {
         return totalTime.getOrDefault(uuid, 0);
     }
+    public int getRemainingTime(UUID uuid) {
+        return remainingTime.getOrDefault(uuid, ConfigManager.getMaxPlaytimeSeconds());
+    }
+    public void setRemainingTime(UUID uuid, int seconds) {
+        remainingTime.put(uuid, seconds);
+    }
     public void addTime(UUID uuid, int seconds){
 
         LocalDate today = getTodayInBrazil();
@@ -77,9 +85,16 @@ public class PlayTimeStorage implements Serializable  {
         dailyTime.put(uuid, getDailyTime(uuid) + seconds);
         totalTime.put(uuid, getTotalTime(uuid) + seconds);
 
+        int remaining = getRemainingTime(uuid) - seconds;
+        setRemainingTime(uuid, Math.max(0, remaining)); // nunca negativo
+    }
+    public void addTimeWithoutRemoving(UUID uuid, int seconds){
+
+        dailyTime.put(uuid, getDailyTime(uuid) + seconds);
+        totalTime.put(uuid, getTotalTime(uuid) + seconds);
     }
     public void restoreTime(UUID uuid, int seconds){
-        dailyTime.put(uuid, getDailyTime(uuid) - seconds);
+        setRemainingTime(uuid, Math.max(0, getRemainingTime(uuid) + seconds));
     }
     public void checkDailyReset(UUID uuid, LocalDate today) {
 
@@ -88,6 +103,7 @@ public class PlayTimeStorage implements Serializable  {
             !lastDate.equals(today)) {
 
             dailyTime.put(uuid, 0);
+            remainingTime.put(uuid, ConfigManager.getMaxPlaytimeSeconds());
             lastSeenDate.put(uuid, today);
         }
     }

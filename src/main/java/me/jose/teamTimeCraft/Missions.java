@@ -25,7 +25,7 @@ public class Missions {
     public void getMissionsAsync(JavaPlugin plugin) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
-                URI uri = URI.create("API URL");
+                URI uri = URI.create("API_TOKEN");
                 URL url = uri.toURL();
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -63,7 +63,7 @@ public class Missions {
             String titulo = (String) card.get("name");
             boolean complete = (boolean) card.get("dueComplete");
 
-            String linha = "§f" + titulo.substring(0, Math.min(titulo.length(), 15))
+            String linha = "§f" + titulo.substring(0, Math.min(titulo.length(), 35))
                     + (complete ? " §a✔" : " §c✖") + "§r "; // Adiciona espaço ou cor extra
 
             objective.getScore(linha).setScore(max - i); // ainda precisa setScore

@@ -21,9 +21,7 @@ public class JoinLeaveListener implements Listener {
 
         Player player = event.getPlayer();
 
-        int maxSeconds = ConfigManager.getMaxPlaytimeSeconds();
-        int played = PlayTimeStorage.getInstance().getDailyTime(player.getUniqueId());
-        int remaining = Math.max(0, maxSeconds - played);
+        int remaining = PlayTimeStorage.getInstance().getRemainingTime(player.getUniqueId());
 
         if (remaining == 0) {
 
@@ -74,6 +72,15 @@ public class JoinLeaveListener implements Listener {
         Missions missions = TeamTimeCraft.getInstance().getMissions();
         missions.showMissions();
 
+        if (!player.hasPlayedBefore()){
+            player.sendTitle(
+                    "§6§lComunaBarrinha", // Título grande e colorido
+                    "§eTodos precisam de um início!!", // Subtítulo menor
+                    10, // fadeIn (ticks)
+                    100, // stay (ticks)
+                    20 // fadeOut (ticks)
+            );
+        }
         //this works but is deprecated
         //event.setJoinMessage(ChatColor.GREEN + "Welcome to the server, " + player.getName() + "!");
     }
