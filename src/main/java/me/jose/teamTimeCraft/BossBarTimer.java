@@ -43,7 +43,7 @@ public class BossBarTimer {
 
                 Component barName = Component.empty()
                         .append(countComponent)
-                        .append(Component.text(" - Tempo restante: " + formatTime(remaining), NamedTextColor.WHITE));
+                        .append(Component.text(" - Tempo restante: " + Utils.formatTime(remaining), NamedTextColor.WHITE));
 
 
                 if (bar == null) {
@@ -109,13 +109,5 @@ public class BossBarTimer {
                 }
             }
         }.runTaskTimer(TeamTimeCraft.getInstance(), 0, 20L);
-    }
-
-    private static String formatTime(int seconds) {
-        int h = seconds / 3600;
-        int m = (seconds % 3600) / 60;
-        int s = seconds % 60;
-        return String.format("%02dh %02dm %02ds", h, m, s);
-
     }
 }

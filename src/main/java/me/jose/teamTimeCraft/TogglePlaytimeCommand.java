@@ -11,6 +11,9 @@ public class TogglePlaytimeCommand implements CommandExecutor {
 
         TeamTimeCraft.toggle = !TeamTimeCraft.toggle;
 
+        if (TeamTimeCraft.toggle) {sender.sendMessage("A contagem de tempo está §cLIGADA.");}
+        else {sender.sendMessage("A contagem de tempo está §aDESLIGADA.");}
+
         return true;
     }
 }

@@ -2,13 +2,15 @@ package me.jose.teamTimeCraft;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
 
 public class RestorePlaytimeCommand implements CommandExecutor {
     @Override
-    public boolean onCommand(org.bukkit.command.CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length < 2){
             sender.sendMessage("§cUso correto: /restoreplaytime <jogador> <segundos>");

@@ -18,15 +18,9 @@ public class AllPlaytimeCommand implements CommandExecutor {
             int seconds = entry.getValue();
             String name = storage.getPlayerName(uuid);
             if (name == null) name = uuid.toString().substring(0, 8); // Fallback simples
-            sender.sendMessage("§f" + name + ": §b" + formatTime(seconds));
+            sender.sendMessage("§f" + name + ": §b" + Utils.formatTime(seconds));
         }
 
         return true;
-    }
-    private String formatTime(int seconds) {
-        int h = seconds / 3600;
-        int m = (seconds % 3600) / 60;
-        int s = seconds % 60;
-        return String.format("%02dh %02dm %02ds", h, m, s);
     }
 }

@@ -23,3 +23,7 @@ commands:
     description: Restaura o tempo diário de um jogador
     usage: /restoreplaytime <jogador> <segundos>
     permission: op
+  resetremainingtime:
+    description: Restaura o tempo restante de todos os jogadores
+    usage: /resetremainingtime
+    permission: op
