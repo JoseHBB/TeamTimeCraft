@@ -23,6 +23,8 @@ public final class TeamTimeCraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JoinLeaveListener(), this);
         getServer().getPluginManager().registerEvents(new EEListeners(getConfig()), this);
         getServer().getPluginManager().registerEvents(new AdvancementListener(), this);
+        getServer().getPluginManager().registerEvents(new RandomChorus(), this);
+
 
         Objects.requireNonNull(getCommand("playtime")).setExecutor(new PlaytimeCommand());
         Objects.requireNonNull(getCommand("allplaytime")).setExecutor(new AllPlaytimeCommand());
